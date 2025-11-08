@@ -1,6 +1,6 @@
 package com.example.tasksystem.config;
 
-import com.example.tasksystem.security.JwtAuthenticationFilter;
+import com.example.tasksystem.authentication.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +27,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public
-    AuthenticationManager authenticationManager(
+    public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
