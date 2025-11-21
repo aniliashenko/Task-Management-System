@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-projects-table
+      author: anton
+      changes:
+        - createTable:
+            tableName: projects
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(25)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: VARCHAR(1000)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: start_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: end_date
+                  type: DATE
+
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
