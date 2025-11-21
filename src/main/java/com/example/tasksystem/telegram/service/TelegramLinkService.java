@@ -14,8 +14,8 @@ public class TelegramLinkService {
     private final TelegramLinkTokenRepository tokenRepository;
 
     public String generateLinkToken(Long userId) {
-        String token = UUID.randomUUID().toString();
-        TelegramLinkToken linkToken = new TelegramLinkToken();
+        final String token = UUID.randomUUID().toString();
+        final TelegramLinkToken linkToken = new TelegramLinkToken();
         linkToken.setUserId(userId);
         linkToken.setToken(token);
         linkToken.setExpiresAt(LocalDateTime.now().plusMinutes(10));

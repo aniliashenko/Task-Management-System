@@ -1,11 +1,10 @@
 package com.example.tasksystem.telegram.controller;
 
+import com.example.tasksystem.authentication.service.CustomUserDetails;
 import com.example.tasksystem.telegram.service.TelegramLinkService;
-import com.example.tasksystem.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,9 +16,9 @@ public class TelegramLinkController {
     private final TelegramLinkService linkService;
 
     @PostMapping("/generate-link")
-    public ResponseEntity<String> generateTelegramLink(@AuthenticationPrincipal UserDetails user) {
-        String token = linkService.generateLinkToken(((User) user).getId());
-        String telegramLink = "https://t.me/taskSystemAzuraBot?start=" + token;
+    public ResponseEntity<String> generateTelegramLink(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        final String token = linkService.generateLinkToken(((CustomUserDetails) userDetails).getId());
+        final String telegramLink = "https://t.me/taskSystemAzuraBot?start=" + token;
         return ResponseEntity.ok(telegramLink);
     }
 }

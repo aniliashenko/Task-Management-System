@@ -1,5 +1,6 @@
 package com.example.tasksystem.telegram.service;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,12 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Service
 @RequiredArgsConstructor
 public class TelegramBot extends TelegramLongPollingBot {
+    @Value("${telegram.bot.token}")
+    @Getter
+    private String botToken;
+
     @Value("${telegram.bot.username}")
+    @Getter
     private String botUsername;
 
     private final TelegramIntegrationService telegramIntegrationService;
@@ -24,14 +30,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            String message = update.getMessage().getText();
-            Long chatId = update.getMessage().getChatId();
+            final String message = update.getMessage().getText();
+            final Long chatId = update.getMessage().getChatId();
 
             if (message.startsWith("/start")) {
-                String[] parts = message.split(" ");
+                final String[] parts = message.split(" ");
                 if (parts.length > 1) {
-                    String token = parts[1];
+                    final String token = parts[1];
                     telegramIntegrationService.linkTelegramAccount(token, chatId);
+                    sendMessage(chatId, "Account linked ✅");
                 } else {
                     sendMessage(chatId, "Hello! To link your account, go to the app and get the link.");
                 }
@@ -40,7 +47,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     public void sendMessage(Long chatId, String text) {
-        SendMessage message = new SendMessage(chatId.toString(), text);
+        final SendMessage message = new SendMessage(chatId.toString(), text);
         try {
             execute(message);
         } catch (TelegramApiException e) {
