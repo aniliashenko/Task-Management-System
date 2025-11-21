@@ -1,17 +1,14 @@
 package com.example.tasksystem.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+
+import java.util.Set;
 
 @Entity
 @Data
@@ -27,20 +24,23 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 25)
+    @Column(nullable = false, length = 100, unique = true)
     private String username;
 
-    @Column(nullable = false, length = 25)
+    @Column(nullable = false, length = 100)
     private String password;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private String first_name;
+    private String firstName;
+    private String lastName;
 
-    @Column(nullable = false)
-    private String last_name;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<Role> roles;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
