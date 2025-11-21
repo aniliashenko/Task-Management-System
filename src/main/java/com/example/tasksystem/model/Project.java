@@ -31,9 +31,12 @@ public class Project {
     private String description;
 
     @Column(nullable = false)
-    private LocalDate start_date;
+    private LocalDate startDate;
 
-    private LocalDate end_date;
+    private LocalDate endDate;
+
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean deleted = false;
 
     public enum Status {
         INITIATED,
