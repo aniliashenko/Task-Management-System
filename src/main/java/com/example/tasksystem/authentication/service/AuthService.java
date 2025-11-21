@@ -35,7 +35,7 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(requestDto.password()));
         user.setFirstName(requestDto.firstName());
         user.setLastName(requestDto.lastName());
-        user.setRoles(Set.of(Role.USER, Role.ADMIN));
+        user.setRoles(Set.of(Role.USER));
         userRepository.save(user);
 
         final String token = jwtProvider.generateToken(user.getUsername());

@@ -3,6 +3,8 @@ package com.example.tasksystem.task.service.impl;
 import com.example.tasksystem.task.event.TaskAssignedEvent;
 import com.example.tasksystem.task.dto.TaskRequestDto;
 import com.example.tasksystem.task.dto.TaskResponseDto;
+import com.example.tasksystem.task.event.TaskDeleteEvent;
+import com.example.tasksystem.task.event.TaskUpdateEvent;
 import com.example.tasksystem.task.filter.TaskSpecification;
 import com.example.tasksystem.task.mapper.TaskMapper;
 import com.example.tasksystem.project.model.Project;
@@ -45,7 +47,6 @@ public class TaskServiceImpl implements TaskService {
 
         if (user.getTelegramChatId() != null) {
             eventPublisher.publishEvent(new TaskAssignedEvent(
-                    task.getId(),
                     user.getId(),
                     task.getName(),
                     user.getUsername())
@@ -85,14 +86,32 @@ public class TaskServiceImpl implements TaskService {
         }
 
         taskMapper.updateTaskFromDto(dto, task);
+        final Task saved = taskRepository.save(task);
 
-        return taskMapper.toDto(taskRepository.save(task));
+        final User user = userRepository.findById(saved.getUser().getId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        if (user.getTelegramChatId() != null) {
+            eventPublisher.publishEvent(new TaskUpdateEvent(
+                    user.getId(),
+                    user.getUsername())
+            );
+        }
+
+        return taskMapper.toDto(saved);
     }
 
     @Override
     public void delete(Long id) {
         final Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Task not found"));
+        if (task.getUser().getTelegramChatId() != null) {
+            eventPublisher.publishEvent(new TaskDeleteEvent(
+                    task.getUser().getId(),
+                    task.getName(),
+                    task.getUser().getUsername())
+            );
+        }
         taskRepository.delete(task);
     }
 }

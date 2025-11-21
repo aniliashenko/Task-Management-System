@@ -5,6 +5,7 @@ import com.example.tasksystem.project.model.Project;
 import java.time.LocalDate;
 
 public record ProjectResponseDto(
+        Long id,
         String name,
         String description,
         Project.Status status,

@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long getChatIdById(Long userId) {
-        User user = userRepository.findById(userId)
+        final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
         return user.getTelegramChatId();
     }
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         user.setTelegramChatId(chatId);
-        User saved = userRepository.save(user);
+        final User saved = userRepository.save(user);
 
         userMapper.toDto(saved);
     }
