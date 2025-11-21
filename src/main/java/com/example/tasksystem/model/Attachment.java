@@ -24,8 +24,9 @@ public class Attachment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long taskId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", nullable = false)
+    private Task task;
 
     @Column(nullable = false)
     private String dropBoxFileId;
@@ -34,5 +35,8 @@ public class Attachment {
     private String fileName;
 
     @Column(nullable = false)
-    private LocalDateTime upload_date;
+    private LocalDateTime uploadDate;
+
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
 }
