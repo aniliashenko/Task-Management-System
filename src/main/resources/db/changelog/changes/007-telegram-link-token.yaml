@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-telegram-link-tokens-table
+      author: anton
+      changes:
+        - createTable:
+            tableName: telegram_link_tokens
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: token
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: expires_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        # FK user_id → users.id
+        - addForeignKeyConstraint:
+            baseTableName: telegram_link_tokens
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_telegram_link_tokens_user_id
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            tableName: telegram_link_tokens
+            columnNames: token
+            constraintName: uq_telegram_link_token

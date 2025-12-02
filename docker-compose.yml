@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  postgresdb:
+    image: postgres:15
+    container_name: project_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: task_management_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: task_system_app
+    depends_on:
+      - postgresdb
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/task_management_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+      JWT_SECRET: ${JWT_SECRET}
+      DROPBOX_ACCESS_TOKEN: ${DROPBOX_ACCESS_TOKEN}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME}
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
